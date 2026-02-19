@@ -32,7 +32,6 @@ jobs:
   dispatch:
     if: ${{ secrets.AGENTWALLET_USERNAME != '' }}
     runs-on: ubuntu-latest
-    environment: GITCLAW
     steps:
       - uses: actions/checkout@v4
 
