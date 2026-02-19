@@ -30,9 +30,8 @@ jobs:
             exit 0
           fi
 
-          gh issue create -R "$GITHUB_REPOSITORY" \
-            --title "Welcome to GitClaw — setup required" \
-            --body "$(cat <<'BODY'
+          SECRETS_URL="https://github.com/${GITHUB_REPOSITORY}/settings/secrets/actions"
+          BODY=$(cat <<EOF
           ## Your agent is ready — it just needs credentials.
 
           All workflows are paused until you add two secrets.
@@ -41,23 +40,23 @@ jobs:
 
           If you don't have one yet:
           1. Go to **https://frames.ag** and create an account
-          2. Save your `username` and `apiToken` (starts with `mf_...`)
-          3. Fund your wallet at `https://frames.ag/u/YOUR_USERNAME`
+          2. Save your \`username\` and \`apiToken\` (starts with \`mf_...\`)
+          3. Fund your wallet at \`https://frames.ag/u/YOUR_USERNAME\`
 
           ### 2. Add secrets
 
-          Go to **[Settings → Secrets → Actions](../../settings/secrets/actions)** and add:
+          Go to **[Settings → Secrets → Actions](${SECRETS_URL})** and add:
 
           | Secret | Value |
           |--------|-------|
-          | `AGENTWALLET_USERNAME` | Your AgentWallet username |
-          | `AGENTWALLET_API_TOKEN` | Your AgentWallet API token (`mf_...`) |
+          | \`AGENTWALLET_USERNAME\` | Your AgentWallet username |
+          | \`AGENTWALLET_API_TOKEN\` | Your AgentWallet API token (\`mf_...\`) |
 
           Or use the CLI:
-          ```bash
+          \`\`\`bash
           gh secret set AGENTWALLET_USERNAME
           gh secret set AGENTWALLET_API_TOKEN
-          ```
+          \`\`\`
 
           ### 3. Done
 
@@ -65,10 +64,13 @@ jobs:
 
           **Actions → GitClaw Agent → Run workflow** → click "Run workflow"
 
-          After the first run, check `.gitclaw/memory/state.json` — cycle should be `1`.
+          After the first run, check \`.gitclaw/memory/state.json\` — cycle should be \`1\`.
 
           ---
 
           Close this issue once you're set up.
-          BODY
-          )"
+          EOF
+          )
+          gh issue create -R "$GITHUB_REPOSITORY" \
+            --title "Welcome to GitClaw — setup required" \
+            --body "$BODY"
