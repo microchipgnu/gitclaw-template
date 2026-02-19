@@ -6,11 +6,19 @@ on:
 
 jobs:
   setup:
-    if: ${{ secrets.AGENTWALLET_USERNAME == '' }}
     runs-on: ubuntu-latest
     permissions:
       issues: write
     steps:
+      - name: Check if already configured
+        env:
+          AGENTWALLET_USERNAME: ${{ secrets.AGENTWALLET_USERNAME }}
+        run: |
+          if [ -n "$AGENTWALLET_USERNAME" ]; then
+            echo "Secrets already configured — skipping welcome."
+            exit 1
+          fi
+
       - name: Create setup issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
