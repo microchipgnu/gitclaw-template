@@ -10,9 +10,17 @@ permissions:
 
 jobs:
   label:
-    if: ${{ secrets.AGENTWALLET_USERNAME != '' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Check secrets
+        env:
+          AGENTWALLET_USERNAME: ${{ secrets.AGENTWALLET_USERNAME }}
+        run: |
+          if [ -z "$AGENTWALLET_USERNAME" ]; then
+            echo "No secrets configured — skipping."
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
 
       - name: Ensure labels exist
